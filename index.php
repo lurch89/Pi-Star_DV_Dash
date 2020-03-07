@@ -47,14 +47,45 @@ $configPistarRelease = parse_ini_file($pistarReleaseConfig, true);
     </script>
     <link href="/featherlight.css" type="text/css" rel="stylesheet" />
     <script src="/featherlight.js" type="text/javascript" charset="utf-8"></script>
+	<link rel="stylesheet" href="/css/bootstrap.min.css" />
+	<script src="/js/bootstrap.min.js" type="text/javascript"></script>
+	
 </head>
 <body>
-<div class="container">
+<div class="container-lg">
+<nav class="navbar navbar-expand navbar-dark bg-dark">
+<a class="navbar-brand" href="#"><?php echo $MYCALL ?></a>
+	<ul class="navbar-nav mr-auto">
+		<li class="nav-item">
+			<a class="nav-link" href="/"><?php echo $lang['dashboard'];?></a>
+		</li>
+		<li class="nav-item">
+			<a class="nav-link" href="/admin/"><?php echo $lang['admin'];?></a>
+		</li>
+		<li class="nav-item">
+			<a class="nav-link" href="/admin/configure.php"><?php echo $lang['configuration'];?></a>
+		</li>
+		<?php if ($_SERVER["PHP_SELF"] == "/admin/index.php") {
+  echo ' <li class="nav-item"><a href="/admin/live_modem_log.php" class="nav-link">'.$lang['live_logs'].'</a></li>'."\n";
+  echo ' <li class="nav-item"><a href="/admin/power.php" class="nav-link">'.$lang['power'].'</a>'."\n";
+  echo ' <li class="nav-item"><a href="/admin/update.php" class="nav-link">'.$lang['update'].'</a></li>'."\n";
+  } ?>
+	</ul>
+	
+	
+	<span class="navbar-text" style="font-size: 8px; text-align: right;">
+	Hostname: <?php echo exec('cat /etc/hostname'); ?>
+	<br />Pi-Star:<?php echo $configPistarRelease['Pi-Star']['Version']?> / <?php echo $lang['dashboard'].": ".$version; ?>
+	</span>
+</nav>
+
+
+<!--
 <div class="header">
 <div style="font-size: 8px; text-align: left; padding-left: 8px; float: left;">Hostname: <?php echo exec('cat /etc/hostname'); ?></div><div style="font-size: 8px; text-align: right; padding-right: 8px;">Pi-Star:<?php echo $configPistarRelease['Pi-Star']['Version']?> / <?php echo $lang['dashboard'].": ".$version; ?></div>
 <h1>Pi-Star <?php echo $lang['digital_voice']." ".$lang['dashboard_for']." ".$MYCALL; ?></h1>
 <p style="padding-right: 5px; text-align: right; color: #ffffff;">
- <a href="/" style="color: #ffffff;"><?php echo $lang['dashboard'];?></a> |
+ <a href="/" style="color: #ffffff;"></a> |
  <a href="/admin/" style="color: #ffffff;"><?php echo $lang['admin'];?></a> |
 <?php if ($_SERVER["PHP_SELF"] == "/admin/index.php") {
   echo ' <a href="/admin/live_modem_log.php" style="color: #ffffff;">'.$lang['live_logs'].'</a> |'."\n";
@@ -64,11 +95,11 @@ $configPistarRelease = parse_ini_file($pistarReleaseConfig, true);
  <a href="/admin/configure.php" style="color: #ffffff;"><?php echo $lang['configuration'];?></a>
 </p>
 </div>
-
+-->
 <?php
 // Output some default features
 if ($_SERVER["PHP_SELF"] == "/admin/index.php") {
-	echo '<div class="contentwide">'."\n";
+	echo '<div class="row"><div class="col">'."\n";
 	echo '<script type="text/javascript">'."\n";
 	echo 'function reloadSysInfo(){'."\n";
 	echo '  $("#sysInfo").load("/dstarrepeater/system.php",function(){ setTimeout(reloadSysInfo,15000) });'."\n";
@@ -79,7 +110,7 @@ if ($_SERVER["PHP_SELF"] == "/admin/index.php") {
 	echo '<div id="sysInfo">'."\n";
 	include 'dstarrepeater/system.php';				// Basic System Info
 	echo '</div>'."\n";
-	echo '</div>'."\n";
+	echo '</div></div>'."\n";
 	}
 // First lets figure out if we are in MMDVMHost mode, or dstarrepeater mode;
 if (file_exists('/etc/dstar-radio.mmdvmhost')) {
@@ -99,7 +130,7 @@ if (file_exists('/etc/dstar-radio.mmdvmhost')) {
 	}
 	$mmdvmconfigfile = getMMDVMConfigFileContent();
 
-	echo '<div class="nav">'."\n";					// Start the Side Menu
+	echo '<div class="row">'."\n";					// Start the Side Menu
 	echo '<script type="text/javascript">'."\n";
 	echo 'function reloadRepeaterInfo(){'."\n";
 	echo '  $("#repeaterInfo").load("/mmdvmhost/repeaterinfo.php",function(){ setTimeout(reloadRepeaterInfo,1000) });'."\n";
@@ -107,12 +138,12 @@ if (file_exists('/etc/dstar-radio.mmdvmhost')) {
 	echo 'setTimeout(reloadRepeaterInfo,1000);'."\n";
 	echo '$(window).trigger(\'resize\');'."\n";
 	echo '</script>'."\n";
-	echo '<div id="repeaterInfo">'."\n";
+	//echo '<div id="repeaterInfo">'."\n";
 	include 'mmdvmhost/repeaterinfo.php';				// MMDVMDash Repeater Info
-	echo '</div>'."\n";
+	//echo '</div>'."\n";
 	echo '</div>'."\n";
 
-	echo '<div class="content">'."\n";
+	echo '<div class="row"><div class="col">'."\n";
 
 	$testMMDVModeDSTARnet = getConfigItem("D-Star Network", "Enable", $mmdvmconfigs);
         if ( $testMMDVModeDSTARnet == 1 ) {				// If D-Star network is enabled, add these extra features.
@@ -178,7 +209,7 @@ if (file_exists('/etc/dstar-radio.mmdvmhost')) {
 	echo "<br />\n";
 	echo '<div id="localTxs">'."\n";
 	include 'mmdvmhost/localtx.php';				// MMDVMDash Local Trasmissions
-	echo '</div>'."\n";
+	echo '</div></div>'."\n";
 	
 	// If POCSAG is enabled, show the information pannel
 	$testMMDVModePOCSAG = getConfigItem("POCSAG Network", "Enable", $mmdvmconfigfile);
